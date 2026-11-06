@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="dark">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,48 +12,109 @@
             theme: {
                 extend: {
                     colors: {
-                        exam: { light: '#ef4444', text: '#dc2626', badge: '#fee2e2' },
-                        activity: { light: '#3b82f6', text: '#2563eb', badge: '#dbeafe' },
-                        pending: { light: '#eab308', text: '#ca8a04', badge: '#fef9c3' }
+                        brand: {
+                            50: '#f0f5ff',
+                            100: '#e0ebff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
                     }
                 }
             }
         }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
+        .glass-header {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .card-hover-effect {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-4px);
+        }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
 
-    <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+    <!-- Sticky Navigation Header -->
+    <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 glass-header border-b border-slate-200/80 dark:border-slate-800/80">
+        <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            <!-- Brand & Title -->
+            <div class="flex items-center gap-3 self-start sm:self-auto">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-pink-500 flex items-center justify-center text-white font-black text-xl shadow-md shadow-indigo-500/20">
                     甲
                 </div>
-                <h1 class="text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-indigo-600 to-pink-600 dark:from-indigo-400 dark:to-pink-400 bg-clip-text text-transparent">
-                    高一甲倒計時
-                </h1>
+                <div>
+                    <h1 class="text-xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent leading-tight">
+                        高一甲倒計時
+                    </h1>
+                    <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500">Class 1A Event Countdown</p>
+                </div>
             </div>
-            <button onclick="document.documentElement.classList.toggle('dark')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-                <i class="fa-solid fa-moon dark:hidden"></i>
-                <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
-            </button>
+
+            <!-- Header Controls: Category Filters & Dark Mode -->
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                <!-- Filter Buttons Nav -->
+                <nav class="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/60 dark:border-slate-700/60 text-xs font-semibold">
+                    <button onclick="setFilter('全部')" id="btn-全部" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm">
+                        <i class="fa-solid fa-list-ul mr-1.5"></i>全部 <span id="count-全部" class="ml-1 opacity-75 text-[10px]"></span>
+                    </button>
+                    <button onclick="setFilter('考試')" id="btn-考試" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                        <i class="fa-solid fa-pen-ruler mr-1.5"></i>考試 <span id="count-考試" class="ml-1 opacity-75 text-[10px]"></span>
+                    </button>
+                    <button onclick="setFilter('活動')" id="btn-活動" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                        <i class="fa-solid fa-calendar-check mr-1.5"></i>活動 <span id="count-活動" class="ml-1 opacity-75 text-[10px]"></span>
+                    </button>
+                    <button onclick="setFilter('未排定')" id="btn-未排定" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                        <i class="fa-solid fa-clock-question mr-1.5"></i>未排定 <span id="count-未排定" class="ml-1 opacity-75 text-[10px]"></span>
+                    </button>
+                </nav>
+
+                <!-- Dark Mode Toggle Button -->
+                <button onclick="toggleDarkMode()" title="切換深淺模式" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-amber-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors shrink-0 shadow-sm">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+            </div>
         </div>
     </header>
 
+    <!-- Main Content Area -->
     <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
-        <div id="countdownGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        <!-- Grid Container -->
+        <div id="countdownGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+        <!-- Empty State Container -->
+        <div id="emptyState" class="hidden flex-col items-center justify-center py-16 text-center">
+            <div class="w-16 h-16 mb-4 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-2xl">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-700 dark:text-slate-300 mb-1">未找到相關項目</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-500">當前分類下暫無任何日程或考試</p>
+        </div>
     </main>
 
-    <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-400">
-        <p>高一甲班級專用倒計時網站</p>
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 py-6 text-center text-xs text-slate-400 dark:text-slate-500">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p class="font-medium">高一甲班級專用倒計時網站</p>
+            <p class="text-[11px] text-slate-400">保持專註 • 勇往直前</p>
+        </div>
     </footer>
 
+    <!-- Logic Script -->
     <script>
+        // Data items source
         const items = [
             { title: "第二次段考", date: "2026-12-01", tag: "考試" },
             { title: "校慶運動會", date: "2026-12-05", tag: "活動" },
@@ -68,6 +129,15 @@
             { title: "未知的活動", date: "", tag: "未排定" }
         ];
 
+        // Current filter state
+        let currentFilter = '全部';
+
+        // Dark mode toggle controller
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Calculate days difference
         function getDays(dateStr) {
             if (!dateStr) return null;
             const today = new Date();
@@ -77,11 +147,60 @@
             return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
         }
 
-        function render() {
-            const list = items.filter(item => {
-                if (item.tag === '未排定' || !item.date) return true;
+        // Filter switcher logic
+        function setFilter(tag) {
+            currentFilter = tag;
+            
+            // Update filter buttons styling
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                btn.className = "filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200";
+            });
+
+            const activeBtn = document.getElementById(`btn-${tag}`);
+            if (activeBtn) {
+                activeBtn.className = "filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 font-bold shadow-sm border border-slate-200/50 dark:border-slate-600/50";
+            }
+
+            render();
+        }
+
+        // Calculate item counts for tags
+        function updateCounts() {
+            const counts = {
+                '全部': 0,
+                '考試': 0,
+                '活動': 0,
+                '未排定': 0
+            };
+
+            items.forEach(item => {
                 const days = getDays(item.date);
-                return days >= 0;
+                // Valid item filter
+                if (item.tag === '未排定' || !item.date || days >= 0) {
+                    counts['全部']++;
+                    if (counts[item.tag] !== undefined) {
+                        counts[item.tag]++;
+                    }
+                }
+            });
+
+            Object.keys(counts).forEach(key => {
+                const badge = document.getElementById(`count-${key}`);
+                if (badge) badge.textContent = `(${counts[key]})`;
+            });
+        }
+
+        // Core Render Function
+        function render() {
+            // Filter and sort items
+            const filteredList = items.filter(item => {
+                const days = getDays(item.date);
+                const isValidDate = item.tag === '未排定' || !item.date || days >= 0;
+                
+                if (!isValidDate) return false;
+                if (currentFilter === '全部') return true;
+                return item.tag === currentFilter;
             }).sort((a, b) => {
                 if (a.tag === '未排定' && b.tag !== '未排定') return 1;
                 if (a.tag !== '未排定' && b.tag === '未排定') return -1;
@@ -90,52 +209,100 @@
                 return new Date(a.date) - new Date(b.date);
             });
 
-            document.getElementById('countdownGrid').innerHTML = list.map(item => {
+            const grid = document.getElementById('countdownGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (filteredList.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+            }
+
+            grid.innerHTML = filteredList.map(item => {
                 const days = getDays(item.date);
                 const isPending = item.tag === '未排定' || !item.date;
 
-                let tagClass = "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900";
-                let textClass = "text-amber-600 dark:text-amber-400";
-                let borderHover = "hover:border-amber-500/50";
+                // Color Themes based on tag
+                let config = {
+                    tagStyle: "bg-amber-50 text-amber-700 border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/60",
+                    textStyle: "text-amber-600 dark:text-amber-400",
+                    borderHover: "hover:border-amber-300 dark:hover:border-amber-700 hover:shadow-amber-500/5",
+                    icon: "fa-solid fa-clock-question"
+                };
 
                 if (item.tag === '考試') {
-                    tagClass = "bg-red-50 text-red-600 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-900";
-                    textClass = "text-red-600 dark:text-red-400";
-                    borderHover = "hover:border-red-500/50";
+                    config = {
+                        tagStyle: "bg-rose-50 text-rose-700 border-rose-200/80 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-900/60",
+                        textStyle: "text-rose-600 dark:text-rose-400",
+                        borderHover: "hover:border-rose-300 dark:hover:border-rose-700 hover:shadow-rose-500/5",
+                        icon: "fa-solid fa-pen-ruler"
+                    };
                 } else if (item.tag === '活動') {
-                    tagClass = "bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900";
-                    textClass = "text-blue-600 dark:text-blue-400";
-                    borderHover = "hover:border-blue-500/50";
+                    config = {
+                        tagStyle: "bg-sky-50 text-sky-700 border-sky-200/80 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-900/60",
+                        textStyle: "text-sky-600 dark:text-sky-400",
+                        borderHover: "hover:border-sky-300 dark:hover:border-sky-700 hover:shadow-sky-500/5",
+                        icon: "fa-solid fa-calendar-star"
+                    };
                 }
 
+                // Dynamic Display Content for Days
                 let daysHTML = '';
                 if (isPending) {
-                    daysHTML = `<div class="py-4 text-center"><span class="text-base font-bold ${textClass} bg-amber-50 dark:bg-amber-950/40 px-4 py-2 rounded-xl border border-amber-200 dark:border-amber-900/60">日期待定</span></div>`;
+                    daysHTML = `
+                        <div class="py-3 text-center">
+                            <span class="inline-flex items-center gap-1.5 text-sm font-bold ${config.textStyle} bg-amber-50 dark:bg-amber-950/40 px-4 py-2 rounded-xl border border-amber-200/60 dark:border-amber-900/60">
+                                <i class="fa-solid fa-spinner fa-spin text-xs"></i> 日期待定
+                            </span>
+                        </div>`;
                 } else if (days === 0) {
-                    daysHTML = `<div class="py-2 text-center"><span class="bg-emerald-500 text-white font-extrabold text-xl px-4 py-2 rounded-xl shadow-md">今天！</span></div>`;
+                    daysHTML = `
+                        <div class="py-2 text-center">
+                            <span class="inline-block bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-xl px-6 py-2 rounded-xl shadow-lg shadow-emerald-500/20 animate-pulse">
+                                今天開跑！
+                            </span>
+                        </div>`;
                 } else {
-                    daysHTML = `<div class="flex items-baseline justify-center gap-1 py-1"><span class="text-xs font-bold text-slate-400">剩餘</span><span class="text-4xl font-black ${textClass}">${days}</span><span class="text-sm font-bold text-slate-500">天</span></div>`;
+                    daysHTML = `
+                        <div class="flex items-baseline justify-center gap-1 py-1">
+                            <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">剩餘</span>
+                            <span class="text-4xl font-black tracking-tight ${config.textStyle} px-1">${days}</span>
+                            <span class="text-sm font-bold text-slate-500 dark:text-slate-400">天</span>
+                        </div>`;
                 }
 
                 return `
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm transition-all ${borderHover}">
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${tagClass}">${item.tag}</span>
+                    <div class="card-hover-effect bg-white dark:bg-slate-800/90 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/80 shadow-sm transition-all duration-300 flex flex-col justify-between ${config.borderHover}">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold border ${config.tagStyle}">
+                                    <i class="${config.icon}"></i> ${item.tag}
+                                </span>
+                                ${!isPending && days <= 7 ? `<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-100 text-rose-600 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800">倒數中</span>` : ''}
+                            </div>
+                            <div class="my-3 text-center">
+                                <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2 leading-snug">${item.title}</h2>
+                                ${daysHTML}
+                            </div>
                         </div>
-                        <div class="my-2 text-center">
-                            <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">${item.title}</h2>
-                            ${daysHTML}
-                        </div>
-                        <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60 text-xs text-slate-400 flex justify-between">
-                            <span>目標日期</span>
-                            <span class="font-semibold text-slate-600 dark:text-slate-300">${item.date || '未排定'}</span>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 text-xs text-slate-400 flex justify-between items-center">
+                            <span class="flex items-center gap-1 font-medium"><i class="fa-regular fa-calendar text-[11px]"></i> 目標日期</span>
+                            <span class="font-semibold font-mono text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 px-2 py-0.5 rounded-md border border-slate-100 dark:border-slate-700">${item.date || '未排定'}</span>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        window.onload = render;
+        // Initialize App on Load
+        window.onload = function() {
+            updateCounts();
+            render();
+        };
     </script>
 </body>
 </html>
