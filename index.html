@@ -44,7 +44,6 @@
 
     <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 glass-header border-b border-slate-200/80 dark:border-slate-800/80">
         <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4">
-            
             <div class="flex items-center gap-3 self-start sm:self-auto">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-pink-500 flex items-center justify-center text-white font-black text-xl shadow-md shadow-indigo-500/20">
                     甲
@@ -71,8 +70,11 @@
                     <button onclick="setFilter('班級專屬')" id="btn-班級專屬" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
                         <i class="fa-solid fa-users mr-1.5"></i>班級專屬 <span id="count-班級專屬" class="ml-1 opacity-75 text-[10px]"></span>
                     </button>
-                    <button onclick="setFilter('未排定')" id="btn-未排定" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
-                        <i class="fa-solid fa-clock mr-1.5"></i>未排定 <span id="count-未排定" class="ml-1 opacity-75 text-[10px]"></span>
+                    <button onclick="setFilter('假日')" id="btn-假日" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                        <i class="fa-solid fa-umbrella-beach mr-1.5"></i>假日 <span id="count-假日" class="ml-1 opacity-75 text-[10px]"></span>
+                    </button>
+                    <button onclick="setFilter('其他')" id="btn-其他" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                        <i class="fa-solid fa-ellipsis mr-1.5"></i>其他 <span id="count-其他" class="ml-1 opacity-75 text-[10px]"></span>
                     </button>
                 </nav>
 
@@ -99,7 +101,7 @@
     <footer class="mt-auto border-t border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 py-6 text-center text-xs text-slate-400 dark:text-slate-500">
         <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
             <p class="font-medium">高一甲倒計時</p>
-            <p class="text-[11px] text-slate-400">網頁維護：高一甲班帳小編</p>
+            <p class="text-[11px] text-slate-400">活動時間請以學校公告為準｜網頁維護：高一甲班帳小編</p>
         </div>
     </footer>
 
@@ -114,7 +116,13 @@
             { title: "校外報佳音週", date: "2026-12-14", tag: "活動" },
             { title: "英語歌唱比賽決賽", date: "2026-12-15", tag: "活動" },
             { title: "校慶書展週", date: "2026-12-21", tag: "活動" },
+            { title: "行憲紀念日", date: "2026-12-25", tag: "假日" },
+            { title: "開國紀念日", date: "2027-01-01", tag: "假日" },
             { title: "第三次段考", date: "2027-01-18", tag: "考試" },
+            { title: "寒假", date: "2027-01-21", tag: "其他" },
+            { title: "寒假學藝活動開始", date: "2027-01-21", tag: "其他" },
+            { title: "高中新韻獎", date: "2027-01-25", tag: "活動" },
+            { title: "115-2開學日", date: "2027-02-11", tag: "其他" },
             { title: "學測", date: "2029-01-20", tag: "考試" }
         ];
 
@@ -155,12 +163,13 @@
                 '考試': 0,
                 '活動': 0,
                 '班級專屬': 0,
-                '未排定': 0
+                '假日': 0,
+                '其他': 0
             };
 
             items.forEach(item => {
                 const days = getDays(item.date);
-                if (item.tag === '未排定' || !item.date || days >= 0) {
+                if (!item.date || days >= 0) {
                     counts['全部']++;
                     if (counts[item.tag] !== undefined) {
                         counts[item.tag]++;
@@ -177,16 +186,15 @@
         function render() {
             const filteredList = items.filter(item => {
                 const days = getDays(item.date);
-                const isValidDate = item.tag === '未排定' || !item.date || days >= 0;
+                const isValidDate = !item.date || days >= 0;
                 
                 if (!isValidDate) return false;
                 if (currentFilter === '全部') return true;
                 return item.tag === currentFilter;
             }).sort((a, b) => {
-                if (a.tag === '未排定' && b.tag !== '未排定') return 1;
-                if (a.tag !== '未排定' && b.tag === '未排定') return -1;
-                if (!a.date) return 1;
-                if (!b.date) return -1;
+                if (!a.date && b.date) return 1;
+                if (a.date && !b.date) return -1;
+                if (!a.date && !b.date) return 0;
                 return new Date(a.date) - new Date(b.date);
             });
 
@@ -205,13 +213,13 @@
 
             grid.innerHTML = filteredList.map(item => {
                 const days = getDays(item.date);
-                const isPending = item.tag === '未排定' || !item.date;
+                const isPending = !item.date;
 
                 let config = {
-                    tagStyle: "bg-amber-50 text-amber-700 border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/60",
-                    textStyle: "text-amber-600 dark:text-amber-400",
-                    borderHover: "hover:border-amber-300 dark:hover:border-amber-700 hover:shadow-lg hover:shadow-amber-500/5",
-                    icon: "fa-solid fa-clock"
+                    tagStyle: "bg-slate-100 text-slate-700 border-slate-200/80 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700/60",
+                    textStyle: "text-slate-600 dark:text-slate-400",
+                    borderHover: "hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-lg hover:shadow-slate-500/5",
+                    icon: "fa-solid fa-ellipsis"
                 };
 
                 if (item.tag === '考試') {
@@ -235,13 +243,20 @@
                         borderHover: "hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-lg hover:shadow-indigo-500/5",
                         icon: "fa-solid fa-users"
                     };
+                } else if (item.tag === '假日') {
+                    config = {
+                        tagStyle: "bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/60",
+                        textStyle: "text-emerald-600 dark:text-emerald-400",
+                        borderHover: "hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-lg hover:shadow-emerald-500/5",
+                        icon: "fa-solid fa-umbrella-beach"
+                    };
                 }
 
                 let daysHTML = '';
                 if (isPending) {
                     daysHTML = `
                         <div class="py-3 text-center">
-                            <span class="inline-flex items-center gap-1.5 text-sm font-bold ${config.textStyle} bg-amber-50 dark:bg-amber-950/40 px-4 py-2 rounded-xl border border-amber-200/60 dark:border-amber-900/60">
+                            <span class="inline-flex items-center gap-1.5 text-sm font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-4 py-2 rounded-xl border border-amber-200/60 dark:border-amber-900/60">
                                 <i class="fa-solid fa-clock text-xs"></i> 日期待定
                             </span>
                         </div>`;
