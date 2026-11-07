@@ -68,6 +68,9 @@
                     <button onclick="setFilter('活動')" id="btn-活動" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
                         <i class="fa-solid fa-calendar-day mr-1.5"></i>活動 <span id="count-活動" class="ml-1 opacity-75 text-[10px]"></span>
                     </button>
+                    <button onclick="setFilter('班級專屬')" id="btn-班級專屬" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                        <i class="fa-solid fa-users mr-1.5"></i>班級專屬 <span id="count-班級專屬" class="ml-1 opacity-75 text-[10px]"></span>
+                    </button>
                     <button onclick="setFilter('未排定')" id="btn-未排定" class="filter-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
                         <i class="fa-solid fa-clock mr-1.5"></i>未排定 <span id="count-未排定" class="ml-1 opacity-75 text-[10px]"></span>
                     </button>
@@ -89,7 +92,7 @@
                 <i class="fa-solid fa-folder-open"></i>
             </div>
             <h3 class="text-base font-bold text-slate-700 dark:text-slate-300 mb-1">未找到相關項目</h3>
-            <p class="text-xs text-slate-400 dark:text-slate-500">當前分類下暫無任何日程或考試</p>
+            <p class="text-xs text-slate-400 dark:text-slate-500">當前分類下暫無任何日程</p>
         </div>
     </main>
 
@@ -102,15 +105,16 @@
 
     <script>
         const items = [
-            { title: "第二次段考", date: "2026-12-01", tag: "考試" },
+            { title: "拔河比賽", date: "2026-11-09", tag: "活動" },
             { title: "愛心義賣", date: "2026-11-18", tag: "活動" },
+            { title: "家長職業探索說明會", date: "2026-11-23", tag: "活動" },
+            { title: "第二次段考", date: "2026-12-01", tag: "考試" },
             { title: "聖誕點燈", date: "2026-12-08", tag: "活動" },
             { title: "校慶運動會", date: "2026-12-11", tag: "活動" },
-            { title: "英語歌唱比賽決賽", date: "2026-12-15", tag: "活動" },
             { title: "校外報佳音週", date: "2026-12-14", tag: "活動" },
-            { title: "家長職業探索說明會", date: "2026-11-23", tag: "活動" },
+            { title: "英語歌唱比賽決賽", date: "2026-12-15", tag: "活動" },
+            { title: "校慶書展週", date: "2026-12-21", tag: "活動" },
             { title: "第三次段考", date: "2027-01-18", tag: "考試" },
-            { title: "拔河比賽", date: "2026-11-09", tag: "活動" },
             { title: "學測", date: "2029-01-20", tag: "考試" }
         ];
 
@@ -150,6 +154,7 @@
                 '全部': 0,
                 '考試': 0,
                 '活動': 0,
+                '班級專屬': 0,
                 '未排定': 0
             };
 
@@ -222,6 +227,13 @@
                         textStyle: "text-sky-600 dark:text-sky-400",
                         borderHover: "hover:border-sky-300 dark:hover:border-sky-700 hover:shadow-lg hover:shadow-sky-500/5",
                         icon: "fa-solid fa-calendar-day"
+                    };
+                } else if (item.tag === '班級專屬') {
+                    config = {
+                        tagStyle: "bg-indigo-50 text-indigo-700 border-indigo-200/80 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-900/60",
+                        textStyle: "text-indigo-600 dark:text-indigo-400",
+                        borderHover: "hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-lg hover:shadow-indigo-500/5",
+                        icon: "fa-solid fa-users"
                     };
                 }
 
